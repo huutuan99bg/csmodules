@@ -1,12 +1,12 @@
-
+#%%
 from time import sleep
 import os
 import re
 import subprocess
 import pyautogui
-from pywinauto.timings import wait_until
 import win32clipboard
-import modules.csautowin as cswin
+# import modules.csautowin as cswin
+import csautowin as cswin
 
 class TelegramDesktop:
     def __init__(self,telegram_path,width=400,height=550):
@@ -59,7 +59,7 @@ class TelegramDesktop:
     def prepare_path(self,path):
         return os.path.join(self.img_path,path)
 
-    def exit_message(self):
+    def home(self):
         pyautogui.press('esc')
         pyautogui.press('esc')
         pyautogui.press('esc')
@@ -72,7 +72,7 @@ class TelegramDesktop:
                 break
     
     def get_username(self):
-        self.exit_message()
+        self.home()
         self.empty_clipboard()
         open_menu = cswin.pil_click_wait_region(8,self.prepare_path('icon_menu.png'), grayscale=True,confidence=0.7,left=0,top=0,width=275,height=self.height)
         sleep(.2)
@@ -94,7 +94,7 @@ class TelegramDesktop:
         else:
             return False
     def get_phone(self):
-        self.exit_message()
+        self.home()
         self.empty_clipboard()
         open_menu = cswin.pil_click_wait_region(8,self.prepare_path('icon_menu.png'), grayscale=True,confidence=0.7,left=0,top=0,width=275,height=self.height)
         sleep(.2)
@@ -196,4 +196,4 @@ class TelegramDesktop:
 
     def kill_telegram(self):
         subprocess.call(['taskkill', '/f', '/im', 'Telegram.exe'])
-    
+
