@@ -5,8 +5,7 @@ import re
 import subprocess
 import pyautogui
 import win32clipboard
-# import modules.csautowin as cswin
-import csautowin as cswin
+import csmodules.csautowin as cswin
 
 class TelegramDesktop:
     def __init__(self,telegram_path,width=400,height=550):
@@ -78,6 +77,7 @@ class TelegramDesktop:
         sleep(.2)
         if open_menu['status'] == 'success':
             cswin.pil_click_wait_region(8,self.prepare_path('settings.png'), grayscale=True,confidence=0.7,left=0,top=0,width=275,height=self.height)
+            sleep(.5)
             cswin.pil_click_wait_region(8,self.prepare_path('edit_profile.png'), grayscale=True,confidence=0.7,left=0,top=0,width=275,height=self.height)
             user_name_icon = cswin.pil_find_wait_region(8,self.prepare_path('username_icon.png'), grayscale=True,confidence=0.8,left=0,top=0,width=275,height=self.height)
             if user_name_icon['status'] == 'success':
@@ -100,6 +100,7 @@ class TelegramDesktop:
         sleep(.2)
         if open_menu['status'] == 'success':
             cswin.pil_click_wait_region(8,self.prepare_path('settings.png'), grayscale=True,confidence=0.7,left=0,top=0,width=275,height=self.height)
+            sleep(.5)
             cswin.pil_click_wait_region(8,self.prepare_path('edit_profile.png'), grayscale=True,confidence=0.7,left=0,top=0,width=275,height=self.height)
             phone_icon = cswin.pil_find_wait_region(8,self.prepare_path('phone_icon.png'), grayscale=True,confidence=0.8,left=0,top=0,width=275,height=self.height)
             if phone_icon['status'] == 'success':
