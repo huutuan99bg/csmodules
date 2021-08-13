@@ -197,4 +197,3 @@ class TelegramDesktop:
 
     def kill_telegram(self):
         subprocess.call(['taskkill', '/f', '/im', 'Telegram.exe'])
-
