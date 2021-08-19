@@ -1,11 +1,11 @@
-#%%
+
 from time import sleep
 import os
 import re
 import subprocess
 import pyautogui
 import win32clipboard
-import csmodules.csautowin as cswin
+import modules.csautowin as cswin
 
 class TelegramDesktop:
     def __init__(self,telegram_path,width=400,height=550):
@@ -20,11 +20,11 @@ class TelegramDesktop:
         self.kill_telegram()
         sleep(.5)
         self.app = subprocess.Popen(self.telegram_path)
-        print('Start telegram successfully')
         self.get_window()
         sleep(wait)
         self.resize(self.width,self.height)
         self.move_corner()        
+        print('Start telegram successfully')
         
     def move_corner(self):
         self.get_window()
@@ -117,7 +117,7 @@ class TelegramDesktop:
         else:
             return False
 
-    def open_profile(self,profile_link,profile_image,type='group'):
+    def open_profile_upper(self,profile_link,profile_image,type='group'):
         pyautogui.hotkey('ctrl','0')
         cswin.write_upper(profile_link)
         pyautogui.press('enter')
@@ -126,9 +126,9 @@ class TelegramDesktop:
 
         cswin.pil_click_wait_region(10,self.prepare_path(profile_image),grayscale=True,confidence=0.85,left=0,top=85,width=self.width,height=self.height-135)
 
-        cswin.pil_click_wait_region(4,self.prepare_path('join_'+type+'.png'),grayscale=True,confidence=0.5,left=0,top=600,width=520,height=50)
-        pyautogui.click(x=self.width-145,y=self.height-50)
-        pyautogui.click(x=self.width-145,y=self.height-50)
+        cswin.pil_click_wait_region(4,self.prepare_path('join_'+type+'.png'),grayscale=True,confidence=0.5,left=0,top=self.height-50,width=self.width,height=50)
+        pyautogui.click(x=self.width-145,y=self.height-25)
+        pyautogui.click(x=self.width-145,y=self.height-25)
         sleep(0.5)
         if type == 'group':
             result = cswin.pil_find_wait_region(10,self.prepare_path('write_message.png'),grayscale=True,confidence=0.6,left=0,top=self.height-50,width=self.width,height=50)
@@ -142,7 +142,41 @@ class TelegramDesktop:
             pass
         sleep(0.5)
         return True
+    def write_message(self,message):
+        try:
+            result = cswin.pil_write_wait_region(10,message,self.prepare_path('write_message.png'),grayscale=True,confidence=0.6,left=0,top=self.height-50,width=self.width,height=50)
+            if result['status'] == 'success':
+                return True
+            else:
+                return False
+        except:
+            return False
+    def open_profile_lower(self,profile_link,profile_image,type='group'):
+        pyautogui.hotkey('ctrl','0')
+        # cswin.write(profile_link)
+        self.write_message(profile_link)
+        pyautogui.press('enter')
 
+        cswin.pil_find_wait_region(4,profile_image, grayscale=True, confidence=0.85, left=0, top=85, width=self.width, height=self.height-135)
+
+        cswin.pil_click_wait_region(10,profile_image, grayscale=True, confidence=0.85, left=0, top=85, width=self.width, height=self.height-135)
+
+        cswin.pil_click_wait_region(4,self.prepare_path('join_'+type+'.png'),grayscale=True,confidence=0.5,left=0,top=self.height-50,width=self.width,height=50)
+        sleep(.2)
+        pyautogui.click(x=self.width-145,y=self.height-25)
+        sleep(0.5)
+        if type == 'group':
+            result = cswin.pil_find_wait_region(10,self.prepare_path('write_message.png'),grayscale=True,confidence=0.6,left=0,top=self.height-50,width=self.width,height=50)
+            if result['status'] == 'error':
+                return False
+        elif type == 'channel':
+            result = cswin.pil_find_wait_region(10,self.prepare_path('mute.png'),grayscale=True,confidence=0.55,left=0,top=self.height-50,width=self.width,height=50)
+            if result['status'] == 'error':
+                return False
+        elif type == 'bot':
+            pass
+        sleep(0.5)
+        return True
     def get_clipboard(self):
         win32clipboard.OpenClipboard()
         text = win32clipboard.GetClipboardData()
@@ -197,3 +231,4 @@ class TelegramDesktop:
 
     def kill_telegram(self):
         subprocess.call(['taskkill', '/f', '/im', 'Telegram.exe'])
+

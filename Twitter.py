@@ -1,6 +1,9 @@
 import time
 import random
+import json
+import os
 import re
+from urllib.parse import urlparse
 class STwitter:
     def __init__(self, driver,cswait):
         self.driver = driver
@@ -57,12 +60,31 @@ class STwitter:
                 self.driver.add_cookie(cookie)
             time.sleep(.5)
             self.driver.get("https://twitter.com/")
+    def SaveCookies(self,export_path):
+        with open(export_path, 'w') as outfile:
+            json.dump(self.driver.get_cookies(), outfile)
+
+    def get_username(self):
+        try:
+            self.driver.get('https://twitter.com/home?lang=en')
+            user = self.cswait.get_element_by_xpath(5,'//div[@data-testid="primaryColumn"]//div[./div[@role="progressbar"]]//a[@role="link"]')
+            username = str(user.get_attribute('href'))
+            username = urlparse(username).path
+            try:
+                username = username.replace('/','')
+            except:
+                pass
+            return username
+        except:
+            return None
+
     def Follow(self,profile_link):
         if self.driver.current_url != profile_link:
             self.driver.get(profile_link)
             time.sleep(random.randint(5,10))
             self.cswait.click_by_xpath(5,'//div[@data-testid="primaryColumn"]//div[@role="button"][contains(@data-testid,"-follow")]')
         return self.cswait.get_element_by_xpath(5,'//div[@data-testid="primaryColumn"]//div[@role="button"][contains(@data-testid,"-unfollow")]')
+        
     def Tweet(self,content,path_image):
         try:
             path_image = r""+path_image
